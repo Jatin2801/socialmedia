@@ -1,0 +1,26 @@
+<!-- we installed express-ejs-layouts for layout  -->
+<html>
+    <head>
+        <title>
+            <%= title  %>
+        </title>
+        <link rel="stylesheet" href="/css/layout.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/header.css"> <!--  we will not use scss as converted css files will be accessed here  -->
+        
+        <%- style %>
+        
+    </head>
+
+    <body>
+        <%- include('_header'); %>
+        <main id="layout-main">
+             <%- body %>
+        </main>
+       
+        <%- include('_footer'); %>
+
+        <%- script %>
+        
+    </body>
+</html>
