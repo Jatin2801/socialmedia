@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose') // to connect it to DB
 
 const postSchema = new mongoose.Schema({
     content: {
