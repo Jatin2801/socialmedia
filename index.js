@@ -1,3 +1,4 @@
+// code for adding all files except node modules (git add --all -- :!node_modules)
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();

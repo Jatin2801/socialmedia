@@ -8,9 +8,15 @@ const postSchema = new mongoose.Schema({
     user: {
         type : mongoose.Schema.Types.ObjectId, // ObjectId is in studio 3T
         ref : 'User' // refering to User Schema
-    }
     },
-    {
+    // include the array of ids of all comments in this post schema itself
+    comments : [ // to make comm. appear faster we fetch them with posts itself 
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Comment'
+        }
+    ]
+    },{
         timestamps: true
 });
 
