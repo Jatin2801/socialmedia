@@ -1,8 +1,8 @@
-<h1>
-    Codeial / <%= title %>
+<h1 style="margin-left: 5%;">
+    POSTS
 </h1>
 
-<section id="posts-feed">
+<section id="posts-feed" style="background-color: bisque; padding: 20px 4px; ">
     <h4>Posts</h4>
     <% if(locals.user){ %> <!-- form will appear ony if signed in we will add another secu. in posts.js  -->
         <form action="/posts/create" id="new-post-form" method="post">
@@ -10,10 +10,10 @@
             <input type="submit" value="post">
         </form>
         <% } %>
-            <div id="post_container">
-                <ul>
+            <div id="post_container" >
+                <ul >
                     <% for(post of posts){ %>
-                        <li>
+                        <li >
                             <p>
                                 <%= post.content %>
                                     <br>
