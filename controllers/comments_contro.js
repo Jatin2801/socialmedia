@@ -3,9 +3,9 @@ const Post = require('../models/post')
 
 module.exports.create = function (req, res) {
     Post.findById(req.body.post)
-        .then(post => {
+        .then(post => { // if post is present then proceed 
             if (post) {
-                Comment.create({
+                Comment.create({ // .create is a mongoose function 
                     content: req.body.content,
                     post: req.body.post,
                     user: req.user._id
@@ -25,5 +25,41 @@ module.exports.create = function (req, res) {
         .catch(err => {
             console.error('Error finding post:', err);
         });
-
 }
+
+// module.exports.destroy = function (req,res){
+//     Comment.findById(req.params.id)
+//     .then((comment)=>{
+//         if(comment.user == req.user.id){
+//             let postId = comment.post;
+//             comment.deleteOne();
+//             Post.findByIdAndUpdate(postId,{ $pull: {comments: req.params.id}}//we're finding a post by its ID and updating it. So, postId is the ID of the post we want to update.
+//             ,function()
+//             .then(post)
+//             ) 
+//             // pull is mongoDB func.  which will give req.params.id from comments 
+//         }
+//     })
+// }
+
+module.exports.destroy = function (req, res) {
+    Comment.findById(req.params.id)
+        .then(function (comment) {
+            if (comment.user == req.user.id) {
+                let postId = comment.post;
+                return comment.deleteOne();
+            } else {
+                throw new Error('Unauthorized');
+            }
+        })
+        .then(function () {
+            return Post.findByIdAndUpdate(req.params.id, { $pull: { comments: req.params.id } });//we're finding a post by its ID and updating it. So, postId is the ID of the post we want to update.
+        })
+        .then(function () {
+            return res.redirect('back');
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.redirect('back');
+        });
+};
