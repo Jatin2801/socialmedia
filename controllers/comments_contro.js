@@ -27,21 +27,6 @@ module.exports.create = function (req, res) {
         });
 }
 
-// module.exports.destroy = function (req,res){
-//     Comment.findById(req.params.id)
-//     .then((comment)=>{
-//         if(comment.user == req.user.id){
-//             let postId = comment.post;
-//             comment.deleteOne();
-//             Post.findByIdAndUpdate(postId,{ $pull: {comments: req.params.id}}//we're finding a post by its ID and updating it. So, postId is the ID of the post we want to update.
-//             ,function()
-//             .then(post)
-//             ) 
-//             // pull is mongoDB func.  which will give req.params.id from comments 
-//         }
-//     })
-// }
-
 module.exports.destroy = function (req, res) {
     Comment.findById(req.params.id)
         .then(function (comment) {
