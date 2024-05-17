@@ -1,0 +1,22 @@
+// link in home.ejs
+#home-container {
+    display: flex;
+
+    #posts-feed {
+        width: 70%;
+        padding: 10px;
+    }
+
+    #user-frnds {
+        width: 30%;
+        padding: 10px;
+        border-left: 1px solid lightgray;
+
+        p {
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+        }
+    }
+}

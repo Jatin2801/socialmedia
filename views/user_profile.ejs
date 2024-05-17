@@ -4,9 +4,18 @@
         Codeial / Profile Page
     </h1>
 
-    <p>Your Name :- <%= profile_user.name %>
-    </p>
-    <p>Email :- <%= profile_user.email %>
-    </p>
-
+  
 </div>
+
+<% if(user.id == profile_user.id){ %> <!-- if user is logged in show update form -->
+<!-- form will be mapped to a route which then will be mapped to action inside controller -->
+<form action="/users/update/<%= profile_user.id %>" method="post">
+ <input type="text" name="name" placeholder="Your Name " value="<%= profile_user.name %>" required><!--value is ini.value of input field-->
+ <input type="email" name="email" placeholder="Your Email " value="<%= profile_user.email %>"required>
+ <input type="submit" value="update">
+ </form><!-- controller is users_contro -->
+
+ <%}else{ %> <!--show only the profile page  -->
+    <p>Your Name :- <%= profile_user.name %></p>
+    <p>Email :- <%= profile_user.email %></p>
+<% } %>

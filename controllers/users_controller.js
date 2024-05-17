@@ -14,6 +14,19 @@ module.exports.profile = function (req, res) {
         });
 };
 
+//Updating User Profile
+module.exports.update = function(req,res){
+    if(req.user.id == req.params.id){ // user thats logged in should be able to update only his profile
+    User.findByIdAndUpdate(req.params.id , req.body)
+    .then(user => {
+        return res.redirect('back');
+    })   
+    .catch(err => {
+        return res.status(401).send('Unauthorised')
+    }) //now route will be updated in users.js
+    }
+}
+
 // render the sign up page
 module.exports.signUp = function (req, res) {
     if(req.isAuthenticated()){
