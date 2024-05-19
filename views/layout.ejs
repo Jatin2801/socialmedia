@@ -14,6 +14,11 @@
 
     <body>
         <%- include('_header.ejs'); %>
+
+        <% if(flash.success && flash.success.length > 0) { %> <!-- if succees is given and msg length is not 0 -->
+            <h4> <%= flash.success %> </h4>
+            <% } %>
+
         <main id="layout-main">
              <%- body %>
         </main>

@@ -84,11 +84,14 @@ module.exports.create = async function (req, res) {
 // sign in and create a session for the user
 module.exports.createSession = function (req, res) {
     //we need to install passport through npm and passport-local as its strategy through npm 
+    req.flash('success','Logged In')
     return res.redirect('/')
 };
 
 module.exports.destroySession = function (req, res) {
     req.logout(function (err) {
+        req.flash('success','Logged Out!') 
+        // as we are requesting flash here we need to respond too , for this we create middleware.js file in config 
         if (err) {
             // handle error here
             console.log(err);

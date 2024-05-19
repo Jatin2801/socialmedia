@@ -1,5 +1,6 @@
 // code for adding all files except node modules (git add --all -- :!node_modules) 
-// this was used git push origin main --force
+// this was used git push origin main --force when I did reset of commits 
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
@@ -10,7 +11,9 @@ const session = require('express-session'); // for encrypting cookies
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-stra');
 const MongoStore = require('connect-mongo');
-const sassMiddleware = require('node-sass-middleware')
+const sassMiddleware = require('node-sass-middleware') // compi. sccs to css files
+const flash = require('connect-flash') // we need to use it afer session is created 
+const customMware = require('./config/middleware') // this is accesed after app.use(flash) in this file 
 
 app.use(sassMiddleware({ // we always need to use before server starts
     src: './assets/scss', 
@@ -57,6 +60,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.setAuthenticatedUser);
+
+app.use(flash()) // used in users_contro
+app.use(customMware.setFlash) // this is used in layout.ejs
 
 // use express router
 app.use('/', require('./routes'));  // error occured when it was written before app.use(passport.initialize()) these 

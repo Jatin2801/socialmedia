@@ -27,6 +27,6 @@ module.exports.home = async function (req, res) {
  console.log('error occured' , err)
  return;
     }
-}
+} 
 
 //module.exports.action_name = function(req,res){} and can be accessed in route to perform diff things
