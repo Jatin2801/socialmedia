@@ -1,20 +1,15 @@
 <link rel="stylesheet" href="/css/user_profile.css">
-<div id="profile_body">
-    <h1>
-        Codeial / Profile Page
-    </h1>
-
-  
-</div>
+ <img src="<%= user.avatar %>" alt="<%=user.name%>" width="100"> <!-- alt is used when img is not present  -->
+<!-- the image wil not show we need to add route in index.js for browser to be able to fetch it -->
 
 <% if(user.id == profile_user.id){ %> <!-- if user is logged in show update form -->
 <!-- form will be mapped to a route which then will be mapped to action inside controller -->
-<form action="/users/update/<%= profile_user.id %>" method="post">
+<form action="/users/update/<%= profile_user.id %>" enctype="multipart/form-data" method="post"> <!-- here we included multer for file uploading  -->
  <input type="text" name="name" placeholder="Your Name " value="<%= profile_user.name %>" required><!--value is ini.value of input field-->
  <input type="email" name="email" placeholder="Your Email " value="<%= profile_user.email %>"required>
+ <input type="file" name="avatar" placeholder="Profile Picture"> <!--we imported multer in user.js -->   
  <input type="submit" value="update">
  </form><!-- controller is users_contro -->
-
  <%}else{ %> <!--show only the profile page  -->
     <p> Name :- <%= profile_user.name %></p>
     <p> Email :- <%= profile_user.email %></p>

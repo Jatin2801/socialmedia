@@ -4,7 +4,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
-const port = 4000;
+const port = 8000;
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./config/mongoose');
 const session = require('express-session'); // for encrypting cookies 
@@ -33,6 +33,9 @@ app.use(express.urlencoded()); // for reading through post request
 app.use(cookieParser());
 
 app.use(express.static('./assets'));
+
+// make the upload path available  to the browser 
+app.use('/uploads',express.static(__dirname + '/uploads'))
 
 app.use(expressLayouts);
 // extract style and scripts from sub pages into the layout

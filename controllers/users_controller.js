@@ -1,102 +1,128 @@
 const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
 module.exports.profile = async function (req, res) {
     try {
-        let user = await User.findById(req.params.id) // once user is found then conti.
+        let user = await User.findById(req.params.id); // Once user is found then continue
         return res.render('user_profile', {
             title: 'User Profile',
             profile_user: user
         });
     } catch (err) {
-        console.log('Error', err)
+        console.log('Error', err);
     }
 };
 
-//Updating User Profile
+// Updating User Profile
 module.exports.update = async function (req, res) {
-    try {
-        if (req.user.id == req.params.id) { // user thats logged in should be able to update only his profile
-            let update = User.findByIdAndUpdate(req.params.id, req.body) //findByIdAndUpdate will update with the value of req.data
+    if (req.user.id == req.params.id) { // User that's logged in should be able to update only their profile
+        try {
+            User.uploadedAvatar(req, res, async function (err) {
+                if (err) {
+                    console.log('***Multer error', err);
+                    return res.redirect('back');
+                }
+
+                let user = await User.findById(req.params.id); // Find the user by ID
+                if (!user) {
+                    console.log('User not found');
+                    return res.redirect('back');
+                }
+
+                user.name = req.body.name || user.name;
+                user.email = req.body.email || user.email;
+
+                if (req.file) { // if a file is uploaded
+
+                    if(user.avatar){ // if avatar is already present 
+                        fs.unlinkSync(path.join(__dirname,'..',user.avatar))
+                    }
+
+                    user.avatar = User.avatarPath + '/' + req.file.filename; // this is saving the avatar field in the user 
+                    console.log('File uploaded successfully:', req.file);
+                }
+
+                await user.save();
+                return res.redirect('back');
+            });
+        } catch (err) {
+            console.log('Error Occurred', err);
             return res.redirect('back');
         }
-    }
-    catch (err) {
-        console.log('Error Occured', err)
+    } else {
+        return res.redirect('back');
     }
 }
 
-// render the sign up page
+// Render the sign-up page
 module.exports.signUp = async function (req, res) {
     try {
         if (req.isAuthenticated()) {
-            return res.redirect('/users/profile') // if user is signed in he will not see sign-up page and redirect to profile page 
+            return res.redirect('/users/profile'); // If user is signed in they will not see sign-up page and redirect to profile page
         }
-        return res.render('user_sign_up', { // if not signed in render sign_up page 
+        return res.render('user_sign_up', { // If not signed in, render sign-up page
             title: "Codeial | Sign Up"
-        })
-    } catch {
-        console.log('Error Occured', err)
+        });
+    } catch (err) {
+        console.log('Error Occurred', err);
     }
 }
 
-//after every server restart session ends we need to fix this by mongo store(installed through npm install connect-mango)
-
-// render the sign in page
+// Render the sign-in page
 module.exports.signIn = async function (req, res) {
     try {
         if (req.isAuthenticated()) {
-            return res.redirect('/users/profile') // if user is signed in he will not see sign in page and redirect to profile page 
+            return res.redirect('/users/profile'); // If user is signed in they will not see sign-in page and redirect to profile page
         }
         return res.render('user_sign_in', {
             title: "Codeial | Sign In"
-        })
-    } catch {
-        console.log('Error Occured', err)
+        });
+    } catch (err) {
+        console.log('Error Occurred', err);
     }
 }
 
-// get the sign up data
+// Get the sign-up data
 module.exports.create = async function (req, res) {
     try {
-        if (req.body.password != req.body.confirm_password) {// to check if paas and confirm_paas are same 
+        if (req.body.password != req.body.confirm_password) { // To check if password and confirm_password are the same
             return res.redirect('back');
         }
-        let user = await User.findOne({ email: req.body.email }) // user imported 1st line and fetched email here 
-        if (!user) { //if user not found create it
-            User.create(req.body) // creating user by fetching data from form into DB .create() is a mongoose func.
+        let user = await User.findOne({ email: req.body.email }); // User imported in the 1st line and fetched email here
+        if (!user) { // If user not found, create it
+            User.create(req.body) // Creating user by fetching data from form into DB .create() is a mongoose function
                 .then(user => {
                     console.log('User created successfully');
                     return res.redirect('/users/sign-in');
                 })
                 .catch(err => {
-                    console.log('error in creating user while signing up');
+                    console.log('Error in creating user while signing up', err);
                     return res.redirect('back');
                 });
         } else {
             return res.redirect('back');
         }
-    }
-    catch {
-        console.log('Error Occured', err)
+    } catch (err) {
+        console.log('Error Occurred', err);
     }
 }
 
-// sign in and create a session for the user
+// Sign in and create a session for the user
 module.exports.createSession = function (req, res) {
-    //we need to install passport through npm and passport-local as its strategy through npm 
-    req.flash('success','Logged In')
-    return res.redirect('/')
+    req.flash('success', 'Logged In');
+    return res.redirect('/');
 };
 
+// Destroy session to log out the user
 module.exports.destroySession = function (req, res) {
     req.logout(function (err) {
-        req.flash('success','Logged Out!') 
-        // as we are requesting flash here we need to respond too , for this we create middleware.js file in config 
+        req.flash('success', 'Logged Out!');
         if (err) {
-            // handle error here
+            // Handle error here
             console.log(err);
             return res.status(500).send(err);
         }
         return res.redirect('/');
     });
-}
+};
